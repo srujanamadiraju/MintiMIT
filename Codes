@@ -1,0 +1,39 @@
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+import numpy as np
+# Sample dataset
+# multivariant code
+X1 = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])[:, np.newaxis]
+X2 = np.array([2, 3, 4, 5, 6, 7, 8, 9, 10, 11])[:, np.newaxis]
+y = np.array([3, 5, 7, 9, 11, 13, 15, 17, 19, 21])[:, np.newaxis]
+
+
+X = np.hstack([X1, X2])
+X_b = np.c_[np.ones((X.shape[0], 1)), X]
+
+# theta = (X^T * X)^-1 * X^T * y
+theta = np.linalg.inv(X_b.T.dot(X_b)).dot(X_b.T).dot(y)
+
+fig = plt.figure(figsize=(10, 6))
+ax = fig.add_subplot(111, projection='3d')
+
+
+ax.scatter(X1, X2, y, c='r', marker='o', label='Actual Data')
+
+
+x1 = np.linspace(min(X1), max(X1), 10)
+x2 = np.linspace(min(X2), max(X2), 10)
+x1, x2 = np.meshgrid(x1, x2)
+y_pred = theta[0] + theta[1] * x1 + theta[2] * x2
+
+# Plotting the regression plane
+ax.plot_surface(x1, x2, y_pred, alpha=0.5, cmap='viridis', label='Regression Plane')
+
+# Set labels and title
+ax.set_xlabel('X1')
+ax.set_ylabel('X2')
+ax.set_zlabel('y')
+ax.set_title('Multivariate Linear Regression')
+
+plt.legend()
+plt.show()
